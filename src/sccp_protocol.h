@@ -85,6 +85,7 @@
 #ifdef CS_EXPERIMENTAL
 #define APPID_URIHOOK					9085
 #endif
+#define APPID_CALLBACK					13
 
 /*
  * \todo Merge sccp_button_type_t / sccp_buttontypes[] and this define

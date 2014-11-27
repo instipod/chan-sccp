@@ -20,6 +20,146 @@
 
 SCCP_FILE_VERSION(__FILE__, "$Revision$")
 
+
+/*!
+ * \brief Send phone available message to device
+ * \param d SCCP Device
+ * \param phone Phone number
+ *
+ */
+void sccp_callback_push_available(sccp_device_t * d, const char *phone)
+{
+	unsigned int transactionID = random();
+	struct ast_str *xmlStr = pbx_str_alloca(DEFAULT_PBX_STR_BUFFERSIZE);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "<CiscoIPPhoneText>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Title>CallBack</Title><Prompt></Prompt>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Text>\n%s has become available\n\nPress Exit to quit this screen</Text>",phone);
+//	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Text>\n%s has become available\nTime  XX:XX  XXXX/XX/XX\nPress Dial to call\nPress Exit to quit this screen</Text>",phone);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name>Dial</Name><URL>DialLine:1:%s</URL><Position>1</Position>",phone);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "</SoftKeyItem><SoftKeyItem><Name>Exit</Name><URL>SoftKey:Exit</URL><Position>3</Position></SoftKeyItem>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "</CiscoIPPhoneText>");
+	sccp_log((DEBUGCAT_SOFTKEY)) (VERBOSE_PREFIX_3 "%s: Send '%s' to Phone\n", DEV_ID_LOG(d), pbx_str_buffer(xmlStr));
+	d->protocol->sendUserToDeviceDataVersionMessage(d, APPID_CALLBACK, 0, 0, transactionID, pbx_str_buffer(xmlStr), 0);
+
+	transactionID = random();
+	struct ast_str *xmlPlayStr = pbx_str_alloca(DEFAULT_PBX_STR_BUFFERSIZE);
+	ast_str_append(&xmlPlayStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "<CiscoIPPhoneExecute><ExecuteItem URL=\"Play:CallBack.raw\"/></CiscoIPPhoneExecute>");
+	d->protocol->sendUserToDeviceDataVersionMessage(d, APPID_CALLBACK, 0, 0, transactionID, pbx_str_buffer(xmlPlayStr), 0);
+}
+
+/*!
+ * \brief Send cancelled message to device
+ * \param d SCCP Device
+ * \param phone Phone number
+ *
+ */
+void sccp_callback_push_cancelled(sccp_device_t * d, const char *phone)
+{
+	unsigned int transactionID = random();
+	struct ast_str *xmlStr = pbx_str_alloca(DEFAULT_PBX_STR_BUFFERSIZE);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "<CiscoIPPhoneText>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Title>CallBack</Title><Prompt></Prompt>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Text>\nCallBack is canceled on %s\n\nPress Exit to quit this screen</Text>",phone);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name></Name><URL></URL><Position>1</Position></SoftKeyItem>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name>Exit</Name><URL>SoftKey:Exit</URL><Position>3</Position></SoftKeyItem>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "</CiscoIPPhoneText>");
+	sccp_log((DEBUGCAT_SOFTKEY)) (VERBOSE_PREFIX_3 "%s: Send '%s' to Phone\n", DEV_ID_LOG(d), pbx_str_buffer(xmlStr));
+	d->protocol->sendUserToDeviceDataVersionMessage(d, APPID_CALLBACK, 0, 0, transactionID, pbx_str_buffer(xmlStr), 0);
+}
+
+/*!
+ * \brief Send activated message to device
+ * \param d SCCP Device
+ * \param phone Phone number
+ *
+ */
+void sccp_callback_push_activated(sccp_device_t * d, const char *phone)
+{
+	unsigned int transactionID = random();
+	struct ast_str *xmlStr = pbx_str_alloca(DEFAULT_PBX_STR_BUFFERSIZE);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "<CiscoIPPhoneText>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Title>CallBack</Title><Prompt></Prompt>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Text>\nCallBack is activated on %s\n\nPress Cancel to deactivate\nPress Exit to quit this screen</Text>",phone);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name>Cancel</Name><URL>UserData:13:CBBCancel</URL><Position>1</Position></SoftKeyItem>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name>Exit</Name><URL>SoftKey:Exit</URL><Position>3</Position></SoftKeyItem>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "</CiscoIPPhoneText>");
+	sccp_log((DEBUGCAT_SOFTKEY)) (VERBOSE_PREFIX_3 "%s: Send '%s' to Phone\n", DEV_ID_LOG(d), pbx_str_buffer(xmlStr));
+	d->protocol->sendUserToDeviceDataVersionMessage(d, APPID_CALLBACK, 0, 0, transactionID, pbx_str_buffer(xmlStr), 0);
+}
+
+/*!
+ * \brief Send active message to device
+ * \param d SCCP Device
+ * \param phone Phone number
+ *
+ */
+void sccp_callback_push_active(sccp_device_t * d, const char *phone)
+{
+	unsigned int transactionID = random();
+	struct ast_str *xmlStr = pbx_str_alloca(DEFAULT_PBX_STR_BUFFERSIZE);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "<CiscoIPPhoneText>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Title>CallBack</Title><Prompt></Prompt>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Text>\nCallBack is active on %s\n\nPress Cancel to deactivate\nPress Exit to quit this screen</Text>",phone);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name>Cancel</Name><URL>UserData:13:CBBCancel</URL><Position>1</Position></SoftKeyItem>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name>Exit</Name><URL>SoftKey:Exit</URL><Position>3</Position></SoftKeyItem>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "</CiscoIPPhoneText>");
+	sccp_log((DEBUGCAT_SOFTKEY)) (VERBOSE_PREFIX_3 "%s: Send '%s' to Phone\n", DEV_ID_LOG(d), pbx_str_buffer(xmlStr));
+	d->protocol->sendUserToDeviceDataVersionMessage(d, APPID_CALLBACK, 0, 0, transactionID, pbx_str_buffer(xmlStr), 0);
+}
+
+/*!
+ * \brief Send not active message to device
+ * \param d SCCP Device
+  *
+ */
+void sccp_callback_push_notactive(sccp_device_t * d)
+{
+	unsigned int transactionID = random();
+	struct ast_str *xmlStr = pbx_str_alloca(DEFAULT_PBX_STR_BUFFERSIZE);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "<CiscoIPPhoneText>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Title>CallBack</Title><Prompt></Prompt>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Text>\nCallBack is not active\n\nPress Exit to quit this screen</Text>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name></Name><URL></URL><Position>1</Position></SoftKeyItem>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name>Exit</Name><URL>SoftKey:Exit</URL><Position>3</Position></SoftKeyItem>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "</CiscoIPPhoneText>");
+	sccp_log((DEBUGCAT_SOFTKEY)) (VERBOSE_PREFIX_3 "%s: Send '%s' to Phone\n", DEV_ID_LOG(d), pbx_str_buffer(xmlStr));
+	d->protocol->sendUserToDeviceDataVersionMessage(d, APPID_CALLBACK, 0, 0, transactionID, pbx_str_buffer(xmlStr), 0);
+}
+
+/*!
+ * \brief Send cancelled message to device
+ * \param d SCCP Device
+ * \param phone Phone number
+ *
+ */
+void sccp_callback_push_cannotbeactivated(sccp_device_t * d, const char *phone)
+{
+	unsigned int transactionID = random();
+	struct ast_str *xmlStr = pbx_str_alloca(DEFAULT_PBX_STR_BUFFERSIZE);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "<CiscoIPPhoneText>");
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Title>CallBack</Title><Prompt></Prompt>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<Text>\nCallBack can not be activated on %s</Text>",phone);
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "<SoftKeyItem><Name>Exit</Name><URL>SoftKey:Exit</URL><Position>3</Position></SoftKeyItem>");
+
+	ast_str_append(&xmlStr, DEFAULT_PBX_STR_BUFFERSIZE, "%s", "</CiscoIPPhoneText>");
+	sccp_log((DEBUGCAT_SOFTKEY)) (VERBOSE_PREFIX_3 "%s: Send '%s' to Phone\n", DEV_ID_LOG(d), pbx_str_buffer(xmlStr));
+	d->protocol->sendUserToDeviceDataVersionMessage(d, APPID_CALLBACK, 0, 0, transactionID, pbx_str_buffer(xmlStr), 0);
+}
+
+
+
+
     /*!
      * \brief Print out a messagebuffer
      * \param messagebuffer Pointer to Message Buffer as char

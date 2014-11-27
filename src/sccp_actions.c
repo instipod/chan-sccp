@@ -3706,7 +3706,22 @@ void sccp_handle_device_to_user(sccp_session_t * s, sccp_device_t * d, sccp_msg_
 	} else {
 		// It has data -> must be a softkey
 		if (dataLength) {
-			/* split data by "/" */
+			switch (appID) {
+				case APPID_CALLBACK:		// handle callback cancel softkey
+					if (strstr(data,"CBBCancel")) {
+						sccp_log((DEBUGCAT_MESSAGE + DEBUGCAT_ACTION)) (VERBOSE_PREFIX_3 "%s: Handle CallBack Cancel softbutton\n", d->id);
+						char cbNumber[SCCP_MAX_EXTENSION] = "";
+						if (PBX(feature_getFromDatabase) ("SCCP/Callback", d->id, cbNumber, sizeof(cbNumber))) {
+							PBX(feature_removeFromDatabase) ("SCCP/Callback", d->id);
+							PBX(feature_removeFromDatabase) ("SCCP/Callback", cbNumber);
+							sccp_callback_push_cancelled(d,cbNumber);
+						} else {
+							sccp_callback_push_notactive(d);
+						}
+
+					}
+				break;
+			}			/* split data by "/" */
 			char str_action[10] = "", str_transactionID[10] = "";
 
 			if (sscanf(data, "%[^/]/%s", str_action, str_transactionID) > 0) {

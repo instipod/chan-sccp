@@ -79,6 +79,7 @@ static const softkeyConfigurationTemplate softKeyTemplate[] = {
 	{"dial", 			SKINNY_LBL_DIAL},
 	{"vidmode", 			SKINNY_LBL_VIDEO_MODE},
 	{"empty", 			SKINNY_LBL_EMPTY},
+	{"callback", 			SKINNY_LBL_CALLBACK},
 	/* *INDENT-ON* */
 };
 

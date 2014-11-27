@@ -925,6 +925,32 @@ static void sccp_sk_uriaction(const sccp_softkeyMap_cb_t * softkeyMap_cb, sccp_d
 #endif
 
 /*!
+ * \brief Callback
+ * \n Usage: \ref sk_callback
+ */
+static void sccp_sk_callback(const sccp_softkeyMap_cb_t *softkeyMap_cb, sccp_device_t * d, sccp_line_t * l, const uint32_t lineInstance, sccp_channel_t * c)
+{
+	sccp_log((DEBUGCAT_SOFTKEY)) (VERBOSE_PREFIX_3 "%s: SoftKey Callback Pressed\n", DEV_ID_LOG(d));
+	if (!d) {
+		return;
+	}
+
+	if (c) {
+		PBX(feature_addToDatabase) ("SCCP/Callback", d->id, c->dialedNumber);
+		PBX(feature_addToDatabase) ("SCCP/Callback", c->dialedNumber, d->id);
+		sccp_callback_push_activated(d,c->dialedNumber);
+	} else {
+		char cbNumber[SCCP_MAX_EXTENSION] = "";
+		if (PBX(feature_getFromDatabase) ("SCCP/Callback", d->id, cbNumber, sizeof(cbNumber))) {
+			sccp_callback_push_active(d,cbNumber);
+		} else {
+			sccp_callback_push_notactive(d);
+		}
+	}
+}
+
+
+/*!
  * \brief Softkey Function Callback by SKINNY LABEL
  */
 static const struct sccp_softkeyMap_cb softkeyCbMap[] = {
@@ -964,6 +990,7 @@ static const struct sccp_softkeyMap_cb softkeyCbMap[] = {
 	{SKINNY_LBL_JOIN, sccp_sk_join, TRUE, NULL},
 	{SKINNY_LBL_CONFLIST, sccp_sk_conflist, TRUE, NULL},
 #endif
+	{SKINNY_LBL_CALLBACK, sccp_sk_callback, FALSE, NULL},
 };
 
 /*!

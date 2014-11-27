@@ -976,7 +976,21 @@ static void sccp_hint_notifyPBX(struct sccp_hint_lineState *lineState)
 #else
 		pbx_devstate_changed_literal(newDeviceState, channelName);					/* come back via pbx callback and update subscribers */
 #endif
+		if (lineState->state == 1) {
+			char deviceId[SCCP_MAX_EXTENSION] = "";
+			if (PBX(feature_getFromDatabase) ("SCCP/Callback", lineState->line->name, deviceId, sizeof(deviceId))) {
+				PBX(feature_removeFromDatabase) ("SCCP/Callback", deviceId);
+				PBX(feature_removeFromDatabase) ("SCCP/Callback", lineState->line->name);
+				sccp_device_t *d = NULL;
+				if ((d = sccp_device_find_byid(deviceId, FALSE))) {
+					sccp_callback_push_available(d,lineState->line->name);
+					d = sccp_device_release(d);
+				}
 
+
+			}
+
+		}
 	}
 }
 

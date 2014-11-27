@@ -29,6 +29,13 @@
 #define strdupa sccp_strdupa
 #endif
 
+void sccp_callback_push_available(sccp_device_t * d, const char *phone);
+void sccp_callback_push_cancelled(sccp_device_t * d, const char *phone);
+void sccp_callback_push_activated(sccp_device_t * d, const char *phone);
+void sccp_callback_push_active(sccp_device_t * d, const char *phone);
+void sccp_callback_push_notactive(sccp_device_t * d);
+void sccp_callback_push_cannotbeactivated(sccp_device_t * d, const char *phone);
+
 void sccp_dump_packet(unsigned char *messagebuffer, int len);
 void sccp_dump_msg(sccp_msg_t * msg);
 int sccp_addons_taps(sccp_device_t * d);
