@@ -152,7 +152,9 @@ void __sccp_indicate(const sccp_device_t * const device, sccp_channel_t * const 
 				iCallInfo.Send(ci, c->callid, c->calltype, instance, device, d->earlyrtp == SCCP_EARLYRTP_IMMEDIATE ? TRUE : FALSE);
 				sccp_device_sendcallstate(d, instance, c->callid, SKINNY_CALLSTATE_PROCEED, SKINNY_CALLPRIORITY_LOW, SKINNY_CALLINFO_VISIBILITY_DEFAULT);
 			}
-
+			if (c->previousChannelState == SCCP_CHANNELSTATE_RINGOUT) {
+                                        break;
+                        }
 			sccp_device_sendcallstate(d, instance, c->callid, SKINNY_CALLSTATE_RINGOUT, SKINNY_CALLPRIORITY_LOW, SKINNY_CALLINFO_VISIBILITY_DEFAULT);
 			sccp_dev_displayprompt(d, instance, c->callid, SKINNY_DISP_RING_OUT, GLOB(digittimeout));
 
@@ -161,7 +163,9 @@ void __sccp_indicate(const sccp_device_t * const device, sccp_channel_t * const 
 			}
 			if (c->rtp.audio.writeState == SCCP_RTP_STATUS_INACTIVE) {				/* send tone if ther is no rtp for inband signaling */
 				sccp_dev_starttone(d, (uint8_t) SKINNY_TONE_ALERTINGTONE, instance, c->callid, SKINNY_TONEDIRECTION_USER);
-			}
+			} else {
+                                sccp_dev_stoptone(d, lineInstance, c->callid);
+                        }
 			sccp_dev_set_keyset(d, instance, c->callid, KEYMODE_RINGOUT);
 			break;
 		case SCCP_CHANNELSTATE_RINGING:
