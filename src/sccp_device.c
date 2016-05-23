@@ -2730,8 +2730,9 @@ static void __sccp_device_indicate_normal_dialing(constDevicePtr device, const u
 		}
 		iCallInfo.Send(callinfo, callid, calltype, lineInstance, device, FALSE);
 	}
-	sccp_dev_set_keyset(device, lineInstance, callid, KEYMODE_RINGOUT);
 	sccp_device_sendcallstate(device, lineInstance, callid, SKINNY_CALLSTATE_PROCEED, SKINNY_CALLPRIORITY_LOW, SKINNY_CALLINFO_VISIBILITY_DEFAULT);
+	iCallInfo.Send(callinfo, callid, calltype, lineInstance, device, FALSE);
+	//sccp_dev_set_keyset(device, lineInstance, callid, KEYMODE_RINGOUT);
 }
 
 static void sccp_device_indicate_dialing(constDevicePtr device, const uint8_t lineInstance, const uint32_t callid, const skinny_calltype_t calltype, sccp_callinfo_t * const callinfo, char dialedNumber[SCCP_MAX_EXTENSION])
