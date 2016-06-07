@@ -1149,7 +1149,7 @@ static void sccp_hint_notifySubscribers(sccp_hint_list_t * hint)
 
 				case SCCP_CHANNELSTATE_DND:
 					//snprintf(displayMessage, sizeof(displayMessage), k.name, sizeof(displayMessage));
-					snprintf(displayMessage, sizeof(displayMessage), "(DND) %s", k.name);
+					snprintf(displayMessage, sizeof(displayMessage), "%s", k.name);
 					status = SKINNY_BLF_STATUS_DND;	/* dnd */
 					break;
 
