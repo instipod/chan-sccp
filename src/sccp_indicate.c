@@ -291,29 +291,14 @@ void __sccp_indicate(const sccp_device_t * const device, sccp_channel_t * const 
 			if (c->rtp.video.writeState != SCCP_RTP_STATUS_INACTIVE) {
 				sccp_channel_closeMultiMediaReceiveChannel(c, TRUE);
 			}
-			sccp_handle_time_date_req(d->session, d, NULL);
+			if (d->session) {
+                                sccp_handle_time_date_req(d->session, d, NULL);
+                        }
 			sccp_device_setLamp(d, SKINNY_STIMULUS_LINE, instance, SKINNY_LAMP_WINK);
 			sccp_device_sendcallstate(d, instance, c->callid, SKINNY_CALLSTATE_HOLD, SKINNY_CALLPRIORITY_LOW, SKINNY_CALLINFO_VISIBILITY_DEFAULT);	/* send connected, so it is not listed as missed call */
 			sccp_dev_displayprompt(d, instance, c->callid, SKINNY_DISP_HOLD, GLOB(digittimeout));
 			iCallInfo.Send(ci, c->callid, c->calltype, instance, device, TRUE);
 			sccp_dev_set_speaker(d, SKINNY_STATIONSPEAKER_OFF);
-=======
-			{
-				if (c->rtp.audio.writeState != SCCP_RTP_STATUS_INACTIVE) {
-					sccp_channel_closeReceiveChannel(c, TRUE);
-				}
-				if (c->rtp.video.writeState != SCCP_RTP_STATUS_INACTIVE) {
-					sccp_channel_closeMultiMediaReceiveChannel(c, TRUE);
-				}
-				if (d->session) {
-					sccp_handle_time_date_req(d->session, d, NULL);
-				}
-				sccp_device_setLamp(d, SKINNY_STIMULUS_LINE, lineInstance, SKINNY_LAMP_WINK);
-				sccp_device_sendcallstate(d, lineInstance, c->callid, SKINNY_CALLSTATE_HOLD, SKINNY_CALLPRIORITY_LOW, SKINNY_CALLINFO_VISIBILITY_DEFAULT);	/* send connected, so it is not listed as missed call */
-				sccp_dev_displayprompt(d, lineInstance, c->callid, SKINNY_DISP_HOLD, GLOB(digittimeout));
-				iCallInfo.Send(ci, c->callid, c->calltype, lineInstance, device, TRUE);
-				sccp_dev_set_speaker(d, SKINNY_STATIONSPEAKER_OFF);
->>>>>>> 8c38d34... Fix: prevent segfault in sccp_handle_time_date_req when we have lost the session and we are still processing a hangup event. Reported by Niklas.
 #if CS_SCCP_CONFERENCE
 			if (c->conference && d->conference) {
 				sccp_dev_set_keyset(d, instance, c->callid, KEYMODE_HOLDCONF);
