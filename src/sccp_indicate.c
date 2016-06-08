@@ -164,7 +164,7 @@ void __sccp_indicate(const sccp_device_t * const device, sccp_channel_t * const 
 			if (c->rtp.audio.writeState == SCCP_RTP_STATUS_INACTIVE) {				/* send tone if ther is no rtp for inband signaling */
 				sccp_dev_starttone(d, (uint8_t) SKINNY_TONE_ALERTINGTONE, instance, c->callid, SKINNY_TONEDIRECTION_USER);
 			} else {
-                                sccp_dev_stoptone(d, lineInstance, c->callid);
+                                sccp_dev_stoptone(d, instance, c->callid);
                         }
 			sccp_dev_set_keyset(d, instance, c->callid, KEYMODE_RINGOUT);
 			break;
